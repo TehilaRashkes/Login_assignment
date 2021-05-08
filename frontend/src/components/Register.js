@@ -1,15 +1,26 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import api from "../api";
+import { useHistory } from "react-router-dom";
 
 const Register = () => {
+  const history = useHistory();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const user = await api.register(data);
+    if (user) {
+      history.push({ pathname: "/HomePage", user: user });
+    }
+  };
+
+  const loginPage = () => {
+    history.push({ pathname: "/" });
   };
 
   return (
@@ -36,7 +47,7 @@ const Register = () => {
             type="text"
             aria-label="Last name"
             className="form-control"
-            {...register("lasttName", {
+            {...register("lastName", {
               required: "required",
               minLength: {
                 value: 3,
@@ -94,6 +105,9 @@ const Register = () => {
           Submit
         </button>
       </form>
+      <button className="btn btn-primary" onClick={loginPage}>
+        Login
+      </button>
     </div>
   );
 };
