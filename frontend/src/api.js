@@ -27,12 +27,24 @@ module.exports = {
       console.log(e);
     }
   },
-  async refreshToken(user) {
-    const token = await axios.get(`${url}/refresh-token`, { user });
-    return token;
+  async refreshToken({ refreshToken, _id }) {
+    try {
+      const res = await axios.post(
+        `${url}/refresh-token`,
+        { refreshToken, _id },
+        { withCredentials: true, credentials: "include" }
+      );
+      return res.data.accessToken;
+    } catch (e) {
+      console.log(e);
+    }
   },
-  async validate(jwt) {
-    const res = await axios.post(`${url}/validate`, { jwt });
-    return res.data;
+  async validate(accessToken) {
+    try {
+      const res = await axios.post(`${url}/validate`, { accessToken });
+      return res.data;
+    } catch (e) {
+      console.log(e);
+    }
   },
 };

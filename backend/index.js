@@ -1,12 +1,27 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
-// const https = require("https");
+const { auth } = require("./middleware/auth");
+const jwt = require("jsonwebtoken");
+
+//const https = require("https");
 const cors = require("cors");
 // const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
+
 app.use(cookieParser());
 app.use(cors({ origin: true, credentials: true }));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.post("/validate", auth, (req, res) => {
+  User.findById(req.user_id)
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((e) => res.status(402).send(err));
+});
+
 // app.use(bodyParser.json({ limit: "50mb" }));
 // app.use(
 //   bodyParser.urlencoded({
@@ -29,15 +44,12 @@ const { User } = require("./db/models/user.model");
 // const { AirbnbProperty } = require("./db/models/airbnbProperty.model");
 // const { AllProperty } = require("./db/models/all_property.model");
 
-const jwt = require("jsonwebtoken");
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 /* MIDDLEWARE  */
 
 // Load middleware
-app.use(bodyParser.json());
-
+//app.use(bodyParser.json());
 // CORS HEADERS MIDDLEWARE
 // app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Credentials", "true");
@@ -59,32 +71,14 @@ app.use(bodyParser.json());
 //   next();
 // });
 
-// check whether the request has a valid JWT access token
-let authenticate = (req, res, next) => {
-  let token = req.body.jwt;
-  // verify the JWT
-  jwt.verify(token, User.getJWTSecret(), (err, decoded) => {
-    if (err) {
-      // there was an error
-      // jwt is invalid - * DO NOT AUTHENTICATE *
-      res.status(401).send(err);
-    } else {
-      // jwt is valid
-      req.user_id = decoded._id;
-      next();
-    }
-  });
-};
-
 // Verify Refresh Token Middleware (which will be verifying the session)
 let verifySession = (req, res, next) => {
   // grab the refresh token from the request header
-  let refreshToken = req.header("x-refresh-token");
-  refreshToken = req.body.refreshToken;
+  //let refreshToken = req.header("x-refresh-token");
   // grab the _id from the request header
-  let _id = req.header("_id");
-  _id = req.body._id;
-
+  //let _id = req.header("_id");
+  const refreshToken = req.body.refreshToken;
+  const _id = req.body._id;
   User.findByIdAndToken(_id, refreshToken)
     .then((user) => {
       if (!user) {
@@ -160,7 +154,6 @@ app.post("/sign-up", (req, res) => {
           });
         })
         .then((authTokens) => {
-          console.log(authTokens);
           // Now we construct and send the response to the user with their auth tokens in the header and the user object in the body
           res
             .cookie("refreshToken", authTokens.refreshToken)
@@ -169,7 +162,6 @@ app.post("/sign-up", (req, res) => {
             .send(newUser);
         })
         .catch((e) => {
-          console.log(e);
           res.status(400).send(e);
         });
     }
@@ -227,8 +219,6 @@ app.post("/sign-in", (req, res) => {
             .cookie("refreshToken", authTokens.refreshToken)
             .cookie("accessToken", authTokens.accessToken)
             .cookie("_id", user._id)
-            .header("x-refresh-token", authTokens.refreshToken)
-            .header("x-access-token", authTokens.accessToken)
             .send(user);
         });
     })
@@ -242,40 +232,27 @@ app.post("/sign-in", (req, res) => {
  * Purpose: generates and returns an access token
  */
 
-app.get("/refresh-token", verifySession, (req, res) => {
+app.post("/refresh-token", verifySession, (req, res) => {
   // we know that the user/caller is authenticated and we have the user_id and user object available to us
   req.userObject
     .generateAccessAuthToken()
     .then((accessToken) => {
-      res
-        .header("x-access-token", accessToken)
-        .send({ accessToken })
-        .cookie("accessToken", accessToken)
-        .cookie("refreshToken", refreshToken);
+      res.cookie("accessToken", accessToken).send({ accessToken });
     })
     .catch((e) => {
       res.status(400).send(e);
     });
 });
 
-app.post("/validate", authenticate, (req, res) => {
-  User.findById(req.user_id)
-    .then((user) => {
-      console.log(user);
-      res.send(user);
-    })
-    .catch((e) => res.send(e));
-});
-
-app.get("/", (req, res) => {
-  User.find({}, (err, docs) => {
-    if (!err) {
-      res.send(docs);
-    } else {
-      res.send(err);
-    }
-  });
-});
+// app.get("/", (req, res) => {
+//   User.find({}, (err, docs) => {
+//     if (!err) {
+//       res.send(docs);
+//     } else {
+//       res.send(err);
+//     }
+//   });
+// });
 
 app.listen(8080, () => {
   console.log(" Server is listening on port 8080");

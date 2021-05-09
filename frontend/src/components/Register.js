@@ -15,23 +15,25 @@ const Register = () => {
   const onSubmit = async (data) => {
     const user = await api.register(data);
     if (user) {
-      history.push({ pathname: "/HomePage", user: user });
+      history.push({ pathname: "/", user: user });
     }
   };
 
   const loginPage = () => {
-    history.push({ pathname: "/" });
+    history.push({ pathname: "/login" });
   };
 
   return (
-    <div>
+    <div className="card w-50 mx-auto mt-5">
+      <h1 className="m-auto text my-5">Register</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="input-group">
+        <div className="input-group ">
           <span className="input-group-text">First and last name</span>
           <input
             type="text"
             aria-label="First name"
             className="form-control"
+            placeholder="First name"
             {...register("firstName", {
               required: "required",
               minLength: {
@@ -47,6 +49,7 @@ const Register = () => {
             type="text"
             aria-label="Last name"
             className="form-control"
+            placeholder="Last name"
             {...register("lastName", {
               required: "required",
               minLength: {
@@ -59,7 +62,7 @@ const Register = () => {
             <p className="form-text"> {errors.lasttName.message} </p>
           )}
         </div>
-        <div className="mb-3">
+        <div className="card-body">
           <label for="exampleInputEmail1" className="form-label">
             Email address
           </label>
@@ -67,6 +70,7 @@ const Register = () => {
             type="email"
             className="form-control"
             id="exampleInputEmail1"
+            placeholder="Email"
             aria-describedby="emailHelp"
             {...register("email", {
               required: "required",
@@ -80,7 +84,7 @@ const Register = () => {
             <p className="form-text"> {errors.email.message} </p>
           )}
         </div>
-        <div className="form-group">
+        <div className="card-body">
           <label for="exampleInputPassword1">Password</label>
           <input
             type="password"
@@ -101,12 +105,18 @@ const Register = () => {
             <p className="form-text"> {errors.password.message} </p>
           )}
         </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
+        <div className="d-flex justify-content-center">
+          <button type="submit" className="btn btn-outline-info">
+            Submit
+          </button>
+        </div>
       </form>
-      <button className="btn btn-primary" onClick={loginPage}>
-        Login
+      <button
+        type="button"
+        className="btn btn-outline-info m-5"
+        onClick={loginPage}
+      >
+        already sign in? Login
       </button>
     </div>
   );

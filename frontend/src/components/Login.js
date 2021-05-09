@@ -2,7 +2,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import api from "../api";
 import { useHistory } from "react-router-dom";
-
 const Login = () => {
   const history = useHistory();
   const {
@@ -14,7 +13,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     const user = await api.login(data);
     if (user) {
-      history.push({ pathname: "/HomePage", user: user });
+      history.push({ pathname: "/", user: user });
     }
   };
   const registerPage = () => {
@@ -22,16 +21,18 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="card w-50 mx-auto mt-5">
+      <h1 className="m-auto text mb-3 mt-5">Login</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-3">
+        <div className="card-body">
           <label for="exampleInputEmail1" className="form-label">
-            Email address
+            Email
           </label>
           <input
             type="email"
             className="form-control"
             id="exampleInputEmail1"
+            placeholder="Email"
             aria-describedby="emailHelp"
             {...register("email", {
               required: "required",
@@ -45,7 +46,7 @@ const Login = () => {
             <p className="form-text"> {errors.email.message} </p>
           )}
         </div>
-        <div className="form-group">
+        <div className="card-body">
           <label for="exampleInputPassword1">Password</label>
           <input
             type="password"
@@ -66,13 +67,24 @@ const Login = () => {
             <p className="form-text"> {errors.password.message} </p>
           )}
         </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
+        <div className="d-flex justify-content-center">
+          <button type="submit" className="btn btn-outline-info">
+            Submit
+          </button>
+        </div>
       </form>
-      <button className="btn btn-primary" onClick={registerPage}>
-        Register
+
+      {/* <Link to="/register" className="dropdown-item bg m-2 col-12">
+        New around here? Sign Up
+      </Link> */}
+      <button
+        type="button"
+        className="btn btn-outline-info m-5"
+        onClick={registerPage}
+      >
+        New user? Register
       </button>
+      {/* <FontAwesomeIcon icon="coffee" /> */}
     </div>
   );
 };

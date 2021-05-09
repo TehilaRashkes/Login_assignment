@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 
 // JWT Secret
-const jwtSecret = "51778657246321226641fsdklafjasdkljfsklfjd7148924065";
+//const jwtSecret = "51778657246321226641fsdklafjasdkljfsklfjd7148924065";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -60,7 +60,7 @@ UserSchema.methods.generateAccessAuthToken = function () {
     jwt.sign(
       { _id: user._id.toHexString() },
       jwtSecret,
-      { expiresIn: "15m" },
+      { expiresIn: "1m" },
       (err, token) => {
         if (!err) {
           resolve(token);
@@ -108,7 +108,7 @@ UserSchema.methods.createSession = function () {
 /* MODEL METHODS (static methods) */
 
 UserSchema.statics.getJWTSecret = function () {
-  return jwtSecret;
+  return this.jwtSecret;
 };
 
 UserSchema.statics.findByIdAndToken = function (_id, token) {
