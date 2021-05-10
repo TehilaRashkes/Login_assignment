@@ -59,8 +59,8 @@ UserSchema.methods.generateAccessAuthToken = function () {
     // Create the JSON Web Token and return that
     jwt.sign(
       { _id: user._id.toHexString() },
-      jwtSecret,
-      { expiresIn: "1m" },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME },
       (err, token) => {
         if (!err) {
           resolve(token);
@@ -195,7 +195,7 @@ let saveSessionToDatabase = function (user, refreshToken) {
 };
 
 let generateRefreshTokenExpiryTime = function () {
-  let daysUntilExpire = "10";
+  let daysUntilExpire = process.env.REFRESH_TOKEN_EXPIRE_DAYS;
   let secondsUntilExpire = daysUntilExpire * 24 * 60 * 60;
   return Date.now() / 1000 + secondsUntilExpire;
 };

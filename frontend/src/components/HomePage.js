@@ -1,9 +1,15 @@
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
 import { useCookies } from "react-cookie";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import api from "../api";
 const HomePage = (props) => {
-  const [cookies] = useCookies(["accessToken", "refreshToken", "_id"]);
+  const [cookies, removeCookie] = useCookies([
+    "accessToken",
+    "refreshToken",
+    "_id",
+  ]);
   const [user, setUser] = useState();
   const history = useHistory();
   const getUser = async () => {
@@ -34,16 +40,28 @@ const HomePage = (props) => {
   }, []);
 
   const logOut = () => {
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+    removeCookie("_id");
     history.push({ pathname: "/login" });
   };
+  if (!user) {
+    return (
+      <div className="d-flex justify-content-md-center align-items-center vh-100">
+        <Loader type="Puff" color="gray" height={300} width={300} />
+      </div>
+    );
+  }
   return (
     <div>
-      <p>
-        שלום {user?.firstName} {user?.lastName}
-      </p>
-      <button className="btn btn-primary" onClick={logOut}>
-        log out
-      </button>
+      <h1 className="d-flex justify-content-md-center align-items-center my-5 display-1">
+        Hello {user?.firstName} {user?.lastName}
+      </h1>
+      <div className="d-flex justify-content-center">
+        <button className="btn btn-secondary" onClick={logOut}>
+          log out
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import api from "../api";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 const Login = () => {
   const history = useHistory();
   const {
@@ -16,13 +16,17 @@ const Login = () => {
       history.push({ pathname: "/", user: user });
     }
   };
-  const registerPage = () => {
-    history.push({ pathname: "/register" });
-  };
 
   return (
-    <div className="card w-50 mx-auto mt-5">
-      <h1 className="m-auto text mb-3 mt-5">Login</h1>
+    <div className="card w-25 mx-auto mt-3 my-2">
+      <img
+        src="https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png"
+        class="card-img-center mx-auto mt-5"
+        alt=""
+        width="70"
+        height="70"
+      ></img>
+      <h1 className="m-auto text mb-1">Login</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="card-body">
           <label for="exampleInputEmail1" className="form-label">
@@ -43,7 +47,7 @@ const Login = () => {
             })}
           />
           {errors.email && (
-            <p className="form-text"> {errors.email.message} </p>
+            <p className="form-text text-danger"> {errors.email.message} </p>
           )}
         </div>
         <div className="card-body">
@@ -64,27 +68,21 @@ const Login = () => {
             })}
           />
           {errors.password && (
-            <p className="form-text"> {errors.password.message} </p>
+            <p className="form-text text-danger"> {errors.password.message} </p>
           )}
         </div>
-        <div className="d-flex justify-content-center">
-          <button type="submit" className="btn btn-outline-info">
+        <div className="d-flex justify-content-center my-2">
+          <button type="submit" className="btn btn-secondary">
             Submit
           </button>
         </div>
       </form>
-
-      {/* <Link to="/register" className="dropdown-item bg m-2 col-12">
-        New around here? Sign Up
-      </Link> */}
-      <button
-        type="button"
-        className="btn btn-outline-info m-5"
-        onClick={registerPage}
-      >
-        New user? Register
-      </button>
-      {/* <FontAwesomeIcon icon="coffee" /> */}
+      <div className="d-flex justify-content-center my-3">
+        Don't have an account?
+        <Link to="/register" style={{ textDecoration: "none", color: "gray" }}>
+          Register
+        </Link>
+      </div>
     </div>
   );
 };

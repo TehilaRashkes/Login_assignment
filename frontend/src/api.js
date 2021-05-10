@@ -1,31 +1,56 @@
+require("dotenv").config({ path: "../.env" });
 const axios = require("axios");
-const url = "http://localhost:8080";
+const url = `${process.env.REACT_APP_SERVER_HOST}:${process.env.REACT_APP_SERVER_PORT}`;
+const Swal = require("sweetalert2");
 
 module.exports = {
-  async login(data) {
-    try {
-      const res = await axios.post(
+  login(data) {
+    return axios
+      .post(
         `${url}/sign-in`,
         { data },
         { withCredentials: true, credentials: "include" }
-      );
-      return res.data;
-    } catch (e) {
-      console.log(e);
-    }
+      )
+      .then((res) => res.data)
+      .catch((e) => {
+        if (e.response?.status === 400) {
+          Swal.fire({
+            title: "oops...",
+            text: e.response.data,
+            icon: "warning",
+          });
+        } else {
+          Swal.fire({
+            title: "oops...",
+            text: "cannot login",
+            icon: "error",
+          });
+        }
+      });
   },
-  async register(data) {
-    try {
-      const res = await axios.post(
+  register(data) {
+    return axios
+      .post(
         `${url}/sign-up`,
         { data },
         { withCredentials: true, credentials: "include" }
-      );
-      console.log(res);
-      return res.data;
-    } catch (e) {
-      console.log(e);
-    }
+      )
+      .then((res) => res.data)
+      .catch((e) => {
+        if (e.response?.status === 409) {
+          Swal.fire({
+            title: "oops...",
+            text: e.response.data,
+            icon: "warning",
+          });
+        } else {
+          Swal.fire({
+            title: "oops...",
+            text: "cannot register",
+            icon: "error",
+          });
+        }
+      });
   },
   async refreshToken({ refreshToken, _id }) {
     try {

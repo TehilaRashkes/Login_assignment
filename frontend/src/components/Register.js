@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import api from "../api";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 const Register = () => {
   const history = useHistory();
@@ -19,16 +19,19 @@ const Register = () => {
     }
   };
 
-  const loginPage = () => {
-    history.push({ pathname: "/login" });
-  };
-
   return (
-    <div className="card w-50 mx-auto mt-5">
-      <h1 className="m-auto text my-5">Register</h1>
+    <div className="card w-25 mx-auto mt-3 my-2">
+      <img
+        src="https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png"
+        class="card-img-center mx-auto mt-5"
+        alt=""
+        width="70"
+        height="70"
+      ></img>
+      <h1 className="m-auto text mb-5">Register</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="input-group ">
-          <span className="input-group-text">First and last name</span>
+        <div className="input-group">
+          <span className="input-group-text">Name</span>
           <input
             type="text"
             aria-label="First name"
@@ -42,9 +45,7 @@ const Register = () => {
               },
             })}
           />
-          {errors.firstName && (
-            <p className="form-text"> {errors.firstName.message} </p>
-          )}
+
           <input
             type="text"
             aria-label="Last name"
@@ -58,13 +59,24 @@ const Register = () => {
               },
             })}
           />
-          {errors.lasttName && (
-            <p className="form-text"> {errors.lasttName.message} </p>
-          )}
+        </div>
+        <div class="container">
+          <div class="row">
+            {errors.lastName && (
+              <p className="form-text col-6 text-end text-danger">
+                {errors.lastName.message}
+              </p>
+            )}
+            {errors.firstName && (
+              <p className="form-text col-6 text-center text-danger">
+                {errors.firstName.message}
+              </p>
+            )}
+          </div>
         </div>
         <div className="card-body">
           <label for="exampleInputEmail1" className="form-label">
-            Email address
+            Email
           </label>
           <input
             type="email"
@@ -81,7 +93,7 @@ const Register = () => {
             })}
           />
           {errors.email && (
-            <p className="form-text"> {errors.email.message} </p>
+            <p className="form-text text-danger"> {errors.email.message} </p>
           )}
         </div>
         <div className="card-body">
@@ -102,22 +114,21 @@ const Register = () => {
             })}
           />
           {errors.password && (
-            <p className="form-text"> {errors.password.message} </p>
+            <p className="form-text text-danger"> {errors.password.message} </p>
           )}
         </div>
-        <div className="d-flex justify-content-center">
-          <button type="submit" className="btn btn-outline-info">
-            Submit
+        <div className="d-flex justify-content-center my-2">
+          <button type="submit" className="btn btn-secondary">
+            Register
           </button>
         </div>
       </form>
-      <button
-        type="button"
-        className="btn btn-outline-info m-5"
-        onClick={loginPage}
-      >
-        already sign in? Login
-      </button>
+      <div className="d-flex justify-content-center my-3">
+        Already have an account?
+        <Link to="/login" style={{ textDecoration: "none", color: "gray" }}>
+          Login
+        </Link>
+      </div>
     </div>
   );
 };
