@@ -14,7 +14,6 @@ const HomePage = (props) => {
   const history = useHistory();
   const getUser = async () => {
     if (props.location.user) {
-      console.log(props.location.user);
       setUser(props.location.user);
     } else {
       let accessToken = await cookies.accessToken;

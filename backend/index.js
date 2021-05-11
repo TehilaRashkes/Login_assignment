@@ -34,13 +34,13 @@ app.post("/sign-up", (req, res) => {
           // Now we construct and send the response to the user with their auth tokens in the header and the user object in the body
           res
             .cookie("refreshToken", authTokens.refreshToken, {
-              maxAge: process.env.COOKIES_EXPIRE,
+              maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRE,
             })
             .cookie("accessToken", authTokens.accessToken, {
-              maxAge: process.env.COOKIES_EXPIRE,
+              maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRE,
             })
             .cookie("_id", newUser._id, {
-              maxAge: process.env.COOKIES_EXPIRE,
+              maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRE,
             })
             .send(newUser);
         })
@@ -69,13 +69,13 @@ app.post("/sign-in", (req, res) => {
           // Now we construct and send the response to the user with their auth tokens in the header and the user object in the body
           res
             .cookie("refreshToken", authTokens.refreshToken, {
-              maxAge: process.env.COOKIES_EXPIRE,
+              maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRE,
             })
             .cookie("accessToken", authTokens.accessToken, {
-              maxAge: process.env.COOKIES_EXPIRE,
+              maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRE,
             })
             .cookie("_id", user._id, {
-              maxAge: process.env.COOKIES_EXPIRE,
+              maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRE,
             })
             .send(user);
         });
@@ -100,7 +100,7 @@ app.post("/refresh-token", verifySession, (req, res) => {
     .then((accessToken) => {
       res
         .cookie("accessToken", accessToken, {
-          maxAge: process.env.COOKIES_EXPIRE,
+          maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRE,
         })
         .send({ accessToken });
     })

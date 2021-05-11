@@ -4,18 +4,17 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 
-// JWT Secret
-//const jwtSecret = "51778657246321226641fsdklafjasdkljfsklfjd7148924065";
-
 const UserSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
       required: true,
+      minlength: 3,
     },
     lastName: {
       type: String,
       required: true,
+      minlength: 3,
     },
     email: {
       type: String,
@@ -65,7 +64,6 @@ UserSchema.methods.generateAccessAuthToken = function () {
         if (!err) {
           resolve(token);
         } else {
-          // there is an error
           reject();
         }
       }
@@ -78,7 +76,6 @@ UserSchema.methods.generateRefreshAuthToken = function () {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(64, (err, buf) => {
       if (!err) {
-        // no error
         const token = buf.toString("hex");
 
         return resolve(token);
@@ -106,10 +103,6 @@ UserSchema.methods.createSession = function () {
 };
 
 /* MODEL METHODS (static methods) */
-
-UserSchema.statics.getJWTSecret = function () {
-  return this.jwtSecret;
-};
 
 UserSchema.statics.findByIdAndToken = function (_id, token) {
   // finds user by id and token
@@ -180,7 +173,6 @@ let saveSessionToDatabase = function (user, refreshToken) {
     let expiresAt = generateRefreshTokenExpiryTime();
 
     user.sessions.push({ token: refreshToken, expiresAt });
-    user.isConnected = true;
 
     user
       .save()
